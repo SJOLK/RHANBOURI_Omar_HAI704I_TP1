@@ -1,5 +1,6 @@
 package animal.server;
 
+import animal.common.Espece;
 import animal.common.IAnimal;
 
 import java.rmi.RemoteException;
@@ -10,10 +11,14 @@ public class AnimalImpl extends UnicastRemoteObject implements IAnimal {
     private String nom;
     private String nomMaitre;
     private String race;
-    private String espece;
+    private Espece espece;
 
-    public AnimalImpl(String nom, String nomMaitre, String race, String espece)
-            throws RemoteException {
+    public AnimalImpl(
+            String nom,
+            String nomMaitre,
+            String race,
+            Espece espece
+    ) throws RemoteException {
         super();
         this.nom = nom;
         this.nomMaitre = nomMaitre;
@@ -37,7 +42,12 @@ public class AnimalImpl extends UnicastRemoteObject implements IAnimal {
     }
 
     @Override
-    public String getEspece() throws RemoteException {
+    public Espece getEspece() throws RemoteException {
+        System.out.println(
+                "Identité de l'espèce côté serveur : "
+                        + System.identityHashCode(espece)
+        );
+
         return espece;
     }
 }

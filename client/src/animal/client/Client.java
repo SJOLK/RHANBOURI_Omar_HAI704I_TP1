@@ -1,5 +1,6 @@
 package animal.client;
 
+import animal.common.Espece;
 import animal.common.IAnimal;
 
 import java.lang.reflect.Proxy;
@@ -20,13 +21,40 @@ public class Client {
             System.out.println("Nom : " + animal.getNom());
             System.out.println("Maître : " + animal.getNomMaitre());
             System.out.println("Race : " + animal.getRace());
-            System.out.println("Espèce : " + animal.getEspece());
-
-            // Vérification que l'objet reçu est un proxy RMI
-            System.out.println("Classe reçue : " + animal.getClass().getName());
             System.out.println(
-                    "Est un proxy : "
+                    "Classe de l'animal : "
+                            + animal.getClass().getName()
+            );
+            System.out.println(
+                    "Animal est un proxy : "
                             + Proxy.isProxyClass(animal.getClass())
+            );
+
+            // Première récupération : le client reçoit une copie
+            Espece premiereCopie = animal.getEspece();
+
+            System.out.println("\n--- Première copie reçue ---");
+            System.out.println("Espèce : " + premiereCopie);
+            System.out.println(
+                    "Identité côté client : "
+                            + System.identityHashCode(premiereCopie)
+            );
+
+            // Modification uniquement dans la JVM du client
+            premiereCopie.setNom("Chat");
+            premiereCopie.setEsperanceVieMoyenne(20);
+
+            System.out.println("\n--- Après modification locale ---");
+            System.out.println("Copie modifiée : " + premiereCopie);
+
+            // Nouvelle demande au serveur
+            Espece deuxiemeCopie = animal.getEspece();
+
+            System.out.println("\n--- Nouvelle copie reçue du serveur ---");
+            System.out.println("Espèce : " + deuxiemeCopie);
+            System.out.println(
+                    "Identité côté client : "
+                            + System.identityHashCode(deuxiemeCopie)
             );
 
         } catch (Exception e) {

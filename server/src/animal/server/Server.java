@@ -1,5 +1,6 @@
 package animal.server;
 
+import animal.common.Espece;
 import animal.common.IAnimal;
 
 import java.rmi.registry.LocateRegistry;
@@ -11,17 +12,22 @@ public class Server {
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
 
+            Espece espece = new Espece("Chien", 13);
             IAnimal animal = new AnimalImpl(
                     "Rex",
                     "Omar",
                     "Berger Allemand",
-                    "Chien"
+                    espece
             );
 
             registry.rebind("Animal", animal);
 
             System.out.println("Serveur démarré.");
             System.out.println("Animal publié sous le nom : Animal");
+            System.out.println(
+                    "Identité initiale de l'espèce côté serveur : "
+                            + System.identityHashCode(espece)
+            );
 
         } catch (Exception e) {
             System.err.println("Erreur serveur : " + e.getMessage());
