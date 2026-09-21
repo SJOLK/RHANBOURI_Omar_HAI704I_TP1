@@ -4,11 +4,13 @@ import animal.common.Espece;
 import animal.common.IAnimal;
 import animal.common.IDossierSuivi;
 import animal.common.ICabinetVeterinaire;
+import animal.common.IObservateurCabinet;
 
 import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
+import java.util.Scanner;
 
 public class Client {
 
@@ -19,6 +21,18 @@ public class Client {
 
             ICabinetVeterinaire cabinet =
                     (ICabinetVeterinaire) registry.lookup("Cabinet");
+
+            String nomClient =
+                    args.length > 0 ? args[0] : "Client sans nom";
+
+            IObservateurCabinet observateur =
+                    new ObservateurCabinetImpl(nomClient);
+
+            cabinet.abonner(observateur);
+
+            System.out.println(
+                    nomClient + " est abonné aux alertes du cabinet."
+            );
 
             System.out.println(
                     "Cabinet est un proxy : "
@@ -190,6 +204,34 @@ public class Client {
             for (String observation : secondDossier.getHistorique()) {
                 System.out.println("- " + observation);
             }
+
+            System.out.println();
+            System.out.println(
+                    "Appuyez sur Entrée pour compléter le cabinet jusqu'à 100 patients..."
+            );
+
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            int nombreActuel = cabinet.getPatients().size();
+
+            for (int numero = nombreActuel + 1; numero <= 100; numero++) {
+                cabinet.ajouterPatient(
+                        "Patient" + numero,
+                        "Maitre" + numero,
+                        "Race test",
+                        new Espece("Espèce test", 10)
+                );
+            }
+
+            System.out.println(
+                    "Nombre final de patients : "
+                            + cabinet.getPatients().size()
+            );
+
+            System.out.println(
+                    "Le client reste actif pour recevoir les alertes."
+            );
 
         } catch (Exception e) {
             System.err.println("Erreur client : " + e.getMessage());

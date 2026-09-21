@@ -16,4 +16,10 @@ public interface ICabinetVeterinaire extends Remote {
             String race,
             Espece espece
     ) throws RemoteException;
+
+    void abonner(IObservateurCabinet observateur)
+            throws RemoteException;
+
+    void desabonner(IObservateurCabinet observateur)
+            throws RemoteException;
 }
