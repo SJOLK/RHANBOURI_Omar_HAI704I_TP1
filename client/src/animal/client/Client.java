@@ -3,10 +3,12 @@ package animal.client;
 import animal.common.Espece;
 import animal.common.IAnimal;
 import animal.common.IDossierSuivi;
+import animal.common.ICabinetVeterinaire;
 
 import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
 public class Client {
 
@@ -15,8 +17,49 @@ public class Client {
             // Connexion au registre RMI lancé sur la machine locale
             Registry registry = LocateRegistry.getRegistry("localhost", 1099);
 
-            // Récupération de l'objet distant publié sous le nom "Animal"
-            IAnimal animal = (IAnimal) registry.lookup("Animal");
+            ICabinetVeterinaire cabinet =
+                    (ICabinetVeterinaire) registry.lookup("Cabinet");
+
+            System.out.println(
+                    "Cabinet est un proxy : "
+                            + Proxy.isProxyClass(cabinet.getClass())
+            );
+
+            System.out.println("\n========== LISTE DES PATIENTS ==========");
+
+            List<IAnimal> patients = cabinet.getPatients();
+
+            for (IAnimal patient : patients) {
+                System.out.println(
+                        "- " + patient.getNom()
+                                + ", maître : " + patient.getNomMaitre()
+                                + ", race : " + patient.getRace()
+                );
+
+                System.out.println(
+                        "  Est un proxy : "
+                                + Proxy.isProxyClass(patient.getClass())
+                );
+            }
+
+            System.out.println("\n========== RECHERCHE ==========");
+
+            IAnimal animal = cabinet.rechercherPatient("rex");
+
+            if (animal == null) {
+                System.out.println("Patient introuvable.");
+                return;
+            }
+
+            System.out.println("Patient trouvé : " + animal.getNom());
+
+            IAnimal patientInexistant =
+                    cabinet.rechercherPatient("Patient inconnu");
+
+            System.out.println(
+                    "Recherche d'un patient inexistant : "
+                            + (patientInexistant == null ? "introuvable" : "trouvé")
+            );
 
             // Appels des méthodes distantes
             System.out.println("Nom : " + animal.getNom());

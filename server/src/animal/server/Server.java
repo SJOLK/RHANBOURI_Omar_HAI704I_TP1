@@ -3,40 +3,62 @@ package animal.server;
 import animal.common.Espece;
 import animal.common.IAnimal;
 import animal.common.IDossierSuivi;
+import animal.common.ICabinetVeterinaire;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
+import java.util.List;
 
 public class Server {
 
     public static void main(String[] args) {
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
-
-            Espece espece = new Espece("Chien", 13);
-
-            IDossierSuivi dossier =
+            // Premier patient
+            IDossierSuivi dossierRex =
                     new DossierSuiviImpl("Bonne santé");
 
-            dossier.ajouterObservation(
+            dossierRex.ajouterObservation(
                     "Première consultation : aucun problème détecté."
             );
 
-            IAnimal animal = new AnimalImpl(
+            IAnimal rex = new AnimalImpl(
                     "Rex",
                     "Omar",
                     "Berger Allemand",
-                    espece,
-                    dossier
+                    new Espece("Chien", 13),
+                    dossierRex
             );
 
-            registry.rebind("Animal", animal);
+            // Deuxième patient
+            IDossierSuivi dossierMimi =
+                    new DossierSuiviImpl("Fatiguée");
+
+            dossierMimi.ajouterObservation(
+                    "Repos conseillé pendant quelques jours."
+            );
+
+            IAnimal mimi = new AnimalImpl(
+                    "Mimi",
+                    "Alice",
+                    "Européen",
+                    new Espece("Chat", 15),
+                    dossierMimi
+            );
+
+            // Création du cabinet avec ses patients
+            ICabinetVeterinaire cabinet =
+                    new CabinetVeterinaireImpl(List.of(rex, mimi));
+
+            // Seul le cabinet est publié
+            registry.rebind("Cabinet", cabinet);
 
             System.out.println("Serveur démarré.");
-            System.out.println("Animal publié sous le nom : Animal");
+            System.out.println("Cabinet publié sous le nom : Cabinet");
             System.out.println(
-                    "Identité initiale de l'espèce côté serveur : "
-                            + System.identityHashCode(espece)
+                    "Objets publiés dans le registre : "
+                            + Arrays.toString(registry.list())
             );
 
         } catch (Exception e) {
