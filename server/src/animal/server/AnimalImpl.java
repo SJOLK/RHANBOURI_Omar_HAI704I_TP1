@@ -2,6 +2,7 @@ package animal.server;
 
 import animal.common.Espece;
 import animal.common.IAnimal;
+import animal.common.IDossierSuivi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -12,18 +13,21 @@ public class AnimalImpl extends UnicastRemoteObject implements IAnimal {
     private String nomMaitre;
     private String race;
     private Espece espece;
+    private IDossierSuivi dossierSuivi;
 
     public AnimalImpl(
             String nom,
             String nomMaitre,
             String race,
-            Espece espece
+            Espece espece,
+            IDossierSuivi dossierSuivi
     ) throws RemoteException {
         super();
         this.nom = nom;
         this.nomMaitre = nomMaitre;
         this.race = race;
         this.espece = espece;
+        this.dossierSuivi = dossierSuivi;
     }
 
     @Override
@@ -49,5 +53,9 @@ public class AnimalImpl extends UnicastRemoteObject implements IAnimal {
         );
 
         return espece;
+    }
+    @Override
+    public IDossierSuivi getDossierSuivi() throws RemoteException {
+        return dossierSuivi;
     }
 }

@@ -2,6 +2,7 @@ package animal.server;
 
 import animal.common.Espece;
 import animal.common.IAnimal;
+import animal.common.IDossierSuivi;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -13,11 +14,20 @@ public class Server {
             Registry registry = LocateRegistry.createRegistry(1099);
 
             Espece espece = new Espece("Chien", 13);
+
+            IDossierSuivi dossier =
+                    new DossierSuiviImpl("Bonne santé");
+
+            dossier.ajouterObservation(
+                    "Première consultation : aucun problème détecté."
+            );
+
             IAnimal animal = new AnimalImpl(
                     "Rex",
                     "Omar",
                     "Berger Allemand",
-                    espece
+                    espece,
+                    dossier
             );
 
             registry.rebind("Animal", animal);

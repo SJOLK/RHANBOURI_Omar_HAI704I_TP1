@@ -12,4 +12,6 @@ public interface IAnimal extends Remote {
     String getRace() throws RemoteException;
 
     Espece getEspece() throws RemoteException;
+
+    IDossierSuivi getDossierSuivi() throws RemoteException;
 }

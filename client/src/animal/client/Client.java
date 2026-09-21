@@ -2,6 +2,7 @@ package animal.client;
 
 import animal.common.Espece;
 import animal.common.IAnimal;
+import animal.common.IDossierSuivi;
 
 import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
@@ -56,6 +57,44 @@ public class Client {
                     "Identité côté client : "
                             + System.identityHashCode(deuxiemeCopie)
             );
+
+            System.out.println("\n========== DOSSIER DE SUIVI ==========");
+
+            // Première récupération du dossier distant
+            IDossierSuivi premierDossier = animal.getDossierSuivi();
+
+            System.out.println(
+                    "Classe du dossier : "
+                            + premierDossier.getClass().getName()
+            );
+            System.out.println(
+                    "Dossier est un proxy : "
+                            + Proxy.isProxyClass(premierDossier.getClass())
+            );
+
+            System.out.println(
+                    "État avant modification : "
+                            + premierDossier.getEtatSante()
+            );
+
+            // Modification distante du véritable dossier
+            premierDossier.setEtatSante("Sous traitement");
+            premierDossier.ajouterObservation(
+                    "Traitement antibiotique prescrit."
+            );
+
+            // On redemande le dossier à l'animal
+            IDossierSuivi secondDossier = animal.getDossierSuivi();
+
+            System.out.println(
+                    "État après nouvelle récupération : "
+                            + secondDossier.getEtatSante()
+            );
+
+            System.out.println("Historique :");
+            for (String observation : secondDossier.getHistorique()) {
+                System.out.println("- " + observation);
+            }
 
         } catch (Exception e) {
             System.err.println("Erreur client : " + e.getMessage());
