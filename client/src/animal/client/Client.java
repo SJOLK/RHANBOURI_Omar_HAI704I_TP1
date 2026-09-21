@@ -42,6 +42,58 @@ public class Client {
                 );
             }
 
+            System.out.println("\n========== AJOUT D'UN PATIENT ==========");
+
+            int nombreAvant = patients.size();
+
+            Espece especeRocky = new Espece("Chien", 12);
+
+            IAnimal nouveauPatient = cabinet.ajouterPatient(
+                    "Rocky",
+                    "Sophie",
+                    "Labrador",
+                    especeRocky
+            );
+
+            System.out.println(
+                    "Patient ajouté : " + nouveauPatient.getNom()
+            );
+            System.out.println(
+                    "Le patient retourné est un proxy : "
+                            + Proxy.isProxyClass(nouveauPatient.getClass())
+            );
+
+// On redemande la liste au serveur
+            List<IAnimal> patientsApresAjout =
+                    cabinet.getPatients();
+
+            System.out.println(
+                    "Nombre de patients avant : " + nombreAvant
+            );
+            System.out.println(
+                    "Nombre de patients après : "
+                            + patientsApresAjout.size()
+            );
+
+            System.out.println("Liste après ajout :");
+
+            for (IAnimal patient : patientsApresAjout) {
+                System.out.println(
+                        "- " + patient.getNom()
+                                + " | " + patient.getEspece()
+                );
+            }
+
+            IAnimal rockyRecherche =
+                    cabinet.rechercherPatient("Rocky");
+
+            System.out.println(
+                    "Recherche de Rocky : "
+                            + (rockyRecherche == null
+                            ? "introuvable"
+                            : rockyRecherche.getNom() + " trouvé")
+            );
+
             System.out.println("\n========== RECHERCHE ==========");
 
             IAnimal animal = cabinet.rechercherPatient("rex");

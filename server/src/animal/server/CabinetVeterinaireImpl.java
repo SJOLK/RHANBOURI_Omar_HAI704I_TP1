@@ -2,6 +2,8 @@ package animal.server;
 
 import animal.common.IAnimal;
 import animal.common.ICabinetVeterinaire;
+import animal.common.Espece;
+import animal.common.IDossierSuivi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -41,5 +43,39 @@ public class CabinetVeterinaireImpl
         }
 
         return null;
+    }
+
+    @Override
+    public synchronized IAnimal ajouterPatient(
+            String nom,
+            String nomMaitre,
+            String race,
+            Espece espece
+    ) throws RemoteException {
+
+        // Ces objets sont créés dans la JVM du serveur
+        IDossierSuivi dossier =
+                new DossierSuiviImpl("À examiner");
+
+        dossier.ajouterObservation(
+                "Patient ajouté au cabinet."
+        );
+
+        IAnimal nouveauPatient = new AnimalImpl(
+                nom,
+                nomMaitre,
+                race,
+                espece,
+                dossier
+        );
+
+        patients.add(nouveauPatient);
+
+        System.out.println(
+                "Nouveau patient ajouté : " + nom
+                        + " | Nombre de patients : " + patients.size()
+        );
+
+        return nouveauPatient;
     }
 }
