@@ -1,14 +1,12 @@
 package animal.client;
 
-import animal.common.Espece;
-import animal.common.IAnimal;
-import animal.common.IDossierSuivi;
-import animal.common.ICabinetVeterinaire;
-import animal.common.IObservateurCabinet;
+import animal.common.*;
+import animal.common.Chien;
 
 import java.lang.reflect.Proxy;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -203,6 +201,38 @@ public class Client {
             System.out.println("Historique :");
             for (String observation : secondDossier.getHistorique()) {
                 System.out.println("- " + observation);
+            }
+
+            System.out.println(
+                    "\n========== A7 : TEST DE SÉRIALISATION =========="
+            );
+
+            try {
+                cabinet.ajouterPatient(
+                        "Rex Junior",
+                        "Omar",
+                        "Berger Allemand",
+                        new Chien(12)
+                );
+
+                System.out.println(
+                        "Correction validée : Rex Junior a été ajouté."
+                );
+
+            } catch (RemoteException e) {
+                System.err.println("Échec attendu lors de l'envoi de Chien.");
+
+                Throwable cause = e;
+
+                while (cause != null) {
+                    System.err.println(
+                            cause.getClass().getName()
+                                    + " : "
+                                    + cause.getMessage()
+                    );
+
+                    cause = cause.getCause();
+                }
             }
 
             System.out.println();
