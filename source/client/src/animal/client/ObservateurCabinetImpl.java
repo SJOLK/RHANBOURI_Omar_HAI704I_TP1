@@ -4,17 +4,39 @@ import animal.common.IObservateurCabinet;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ObservateurCabinetImpl
         extends UnicastRemoteObject
         implements IObservateurCabinet {
 
     private final String nomClient;
+    private final Consumer<String> gestionnaireAlerte;
 
+    /*
+     * Constructeur utilisé par le client console.
+     * Les alertes continuent à être affichées dans la console.
+     */
     public ObservateurCabinetImpl(String nomClient)
             throws RemoteException {
+
+        this(nomClient, System.out::println);
+    }
+
+    /*
+     * Constructeur utilisé par l'interface graphique.
+     */
+    public ObservateurCabinetImpl(
+            String nomClient,
+            Consumer<String> gestionnaireAlerte
+    ) throws RemoteException {
+
         super();
+
         this.nomClient = nomClient;
+        this.gestionnaireAlerte =
+                Objects.requireNonNull(gestionnaireAlerte);
     }
 
     @Override
@@ -29,19 +51,21 @@ public class ObservateurCabinetImpl
                         ? "à la hausse"
                         : "à la baisse";
 
-        System.out.println();
-        System.out.println("========== ALERTE CABINET ==========");
-        System.out.println("Client concerné : " + nomClient);
-        System.out.println(
-                "Seuil de " + seuil
+        String message =
+                "========== ALERTE CABINET =========="
+                        + System.lineSeparator()
+                        + "Client concerné : " + nomClient
+                        + System.lineSeparator()
+                        + "Seuil de " + seuil
                         + " patients franchi " + direction
-        );
-        System.out.println(
-                "Nombre de patients : "
+                        + System.lineSeparator()
+                        + "Nombre de patients : "
                         + ancienNombrePatients
                         + " -> "
                         + nouveauNombrePatients
-        );
-        System.out.println("====================================");
+                        + System.lineSeparator()
+                        + "====================================";
+
+        gestionnaireAlerte.accept(message);
     }
 }

@@ -11,6 +11,7 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class LogiqueClient {
 
@@ -206,21 +207,40 @@ public class LogiqueClient {
     public void abonner(String nomClient)
             throws ErreurClientException {
 
+        // Version utilisée par le client console.
+        abonner(nomClient, System.out::println);
+    }
+
+    public void abonner(
+            String nomClient,
+            Consumer<String> gestionnaireAlerte
+    ) throws ErreurClientException {
+
         if (observateur != null) {
             throw new ErreurClientException(
                     "Ce client est déjà abonné aux alertes."
             );
         }
 
+        if (gestionnaireAlerte == null) {
+            throw new ErreurClientException(
+                    "Le gestionnaire d'alertes ne peut pas être absent."
+            );
+        }
+
         ObservateurCabinetImpl nouvelObservateur = null;
 
         try {
-            String nom = nomClient == null || nomClient.isBlank()
-                    ? "Client"
-                    : nomClient.trim();
+            String nom =
+                    nomClient == null || nomClient.isBlank()
+                            ? "Client"
+                            : nomClient.trim();
 
             nouvelObservateur =
-                    new ObservateurCabinetImpl(nom);
+                    new ObservateurCabinetImpl(
+                            nom,
+                            gestionnaireAlerte
+                    );
 
             cabinet.abonner(nouvelObservateur);
             observateur = nouvelObservateur;
