@@ -392,7 +392,7 @@ Nombre de patients : 99 -> 100
 ====================================
 ```
 
-![Callback RMI affiché dans l’interface Swing](docs/interface-alertes.png)
+![Callback RMI affiché dans l’interface Swing](./docs/interface-alertes.png)
 
 ## Objets transmis par référence
 
