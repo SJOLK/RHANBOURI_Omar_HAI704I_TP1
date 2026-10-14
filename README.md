@@ -37,6 +37,18 @@ L’application permet de :
 Le code source est organisé dans trois modules placés dans le dossier `source/` :
 
 ```text
+
+RHANBOURI_Omar_HAI704I_TP1.zip
+|-- Compte_Rendu_TP1_RMI_Omar_RHANBOURI.pdf
+|-- README.pdf
+|-- source/
+| |-- common/
+| |-- server/
+| ‘-- client/
+|-- video/
+| ‘-- demonstration.txt
+
+
 source/
 ├── common/
 │   └── src/
